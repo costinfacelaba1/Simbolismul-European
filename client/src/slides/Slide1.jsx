@@ -2,7 +2,7 @@ import React from 'react'
 
 const Slide1 = () => {
   return (
-    <div>apai </div>
+    <div>Amu no , csf n-ai csf</div>
   )
 }
 

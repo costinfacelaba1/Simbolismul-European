@@ -42,35 +42,44 @@ const SlideShow = () => {
   const [fadeClass, setFadeClass] = useState('fade-in');  // Manage fade class state
   const [isFading, setIsFading] = useState(false);  // Track if the fade-out effect is active
 
+  const changeSlide = () => {
+    if (!isFading) {
+      setIsFading(true);
+      setFadeClass('fade-out');
+
+      setTimeout(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % components.length);
+
+        setTimeout(() => {
+          setFadeClass('fade-in-visible');
+          setIsFading(false);
+        }, 200);
+      }, 400);
+    }
+  };
+
   useEffect(() => {
     const handleSpacebarPress = (event) => {
-      if (event.code === "Space" && !isFading) {
-        // Start fade-out animation
-        setIsFading(true);
-        setFadeClass('fade-out');  // Apply fade-out class
-
-        // After fade-out is complete (0.4s), switch to the next slide
-        setTimeout(() => {
-          // Update index to show the next component, loop back to 0 after last component
-          setCurrentIndex((prevIndex) => (prevIndex + 1) % components.length);
-
-          // Trigger fade-in animation after a brief wait (0.2s)
-          setTimeout(() => {
-            setFadeClass('fade-in-visible');
-            setIsFading(false);  // Reset the fading state after the transition
-          }, 200);  // Delay for 200ms before starting fade-in
-        }, 400);  // Wait for 400ms to let fade-out animation finish
+      if (event.code === "Space") {
+        changeSlide();
       }
     };
 
-    // Add event listener when the component mounts
+    // Add event listener for spacebar
     window.addEventListener("keydown", handleSpacebarPress);
 
-    // Clean up event listener on component unmount
+    // Add event listener for click
+    const handleClick = () => {
+      changeSlide();
+    };
+    window.addEventListener("click", handleClick);
+
+    // Clean up event listeners on component unmount
     return () => {
       window.removeEventListener("keydown", handleSpacebarPress);
+      window.removeEventListener("click", handleClick);
     };
-  }, [isFading]);  // Track fading state to prevent conflicting transitions
+  }, [isFading]); // Track fading state to prevent conflicting transitions
 
   return (
     <div className="slide-show-container">
